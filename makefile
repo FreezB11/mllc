@@ -1,5 +1,5 @@
 all:
-	gcc -o mllc mllc.c
+	gcc -o my_mllc my_mllc.c
 	./mllc
 
 test:
