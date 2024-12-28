@@ -10,6 +10,7 @@
 */
 char heap[1024*1024] ={0};
 size_t heap_size = 1024*1024;
+size_t heap_alloc_size = 0;
 
 typedef struct chunk{
     size_t size;
@@ -66,12 +67,12 @@ void *heap_alloc(size_t size){
 
     log("allocated " << size << " bytes at address " << chunks[chunks_size].start_addr)
     chunks_size++;
-
+    heap_alloc_size += size;
     return chunks[chunks_size-1].start_addr;    
 }
 
 void heap_free(void *ptr){
-    if(ptr == NULL){
+    if(ptr == NULL || ptr < (void *)heap || ptr >= (void*)(heap+heap_size)){
         log("ERR: Invalid pointer\n")
     }
     for (size_t i = 0; i < chunks_size; i++){
@@ -79,7 +80,9 @@ void heap_free(void *ptr){
         if(chunks[i].start_addr == ptr){
             //set
             chunks[i].is_free = true;
-            heap_size -= chunks[i].size;
+            heap_alloc_size -= chunks[i].size;
+            log("Freed chunk of size " << chunks[i].size << " at address " << ptr)
+            
             return;
 
         }
