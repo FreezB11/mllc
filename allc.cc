@@ -48,6 +48,7 @@ void *heap_alloc(size_t size){
     for (size_t i = 0; i < chunks_size; i++){
         if (chunks[i].is_free && chunks[i].size >= size){
             chunks[i].is_free = false;
+            log("Reusing the free chunk of size "<< chunks[i].size<<" at address " <<chunks[i].start_addr)
             return chunks[i].start_addr;
         }
     }
@@ -82,7 +83,7 @@ void heap_free(void *ptr){
             chunks[i].is_free = true;
             heap_alloc_size -= chunks[i].size;
             log("Freed chunk of size " << chunks[i].size << " at address " << ptr)
-            
+
             return;
 
         }
@@ -91,25 +92,25 @@ void heap_free(void *ptr){
 }
 
 void heap_status(){
-
+    log("\nHeap status:\n")
+    for (size_t i = 0; i < chunks_size; i++){
+        log("Chunk["<<i<<"], size = " << chunks[i].size<<", is_free["<<(chunks[i].is_free ? "true]" : "false]") << "start_addr = "<<chunks[i].start_addr)
+    }
+    log("\n")
 }
 
 int main() {
     
-    void *test = heap_alloc(26);
-    // void *test2 = heap_alloc(10);
-    // log(test)
-    // heap_free(test);
+    //testing
+    void* ptr1 = heap_alloc(100);
+    void* ptr2 = heap_alloc(200);
+    heap_status();
 
-    void *test2 = heap_alloc(10);
-    
-    // heap_free(test);
-    // heap_free(test2);
-    // void *test3 = heap_alloc(30);
-    // heap_free(test2);
-    // void *test4 = heap_alloc(10);
-    // log(test2)
-    // log(test3)
-    // log(test4)
+    heap_free(ptr1);
+    heap_status();
+
+    void* ptr3 = heap_alloc(50);
+    heap_status();
+
     return 0;
 }
