@@ -21,6 +21,7 @@ typedef struct chunk{
 
 chunk chunks[(1024*1024)/sizeof(chunk)] = {0};
 size_t chunks_size = 0;
+chunk free_chunks[1024] = {0};
 
  
 #define log(c) std::cout << c << std::endl;
